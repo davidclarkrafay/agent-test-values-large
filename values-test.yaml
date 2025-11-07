@@ -1,0 +1,79 @@
+name: sdlc-agents #the name of the deployment
+environment: internal #the environment to deploy to
+
+imagePullSecrets:
+  - jfrog #the image pull secret to use
+
+app:
+  account: "725455655265"
+  region: "us-east-1"
+  suffix: "ffcc"
+
+  image: "devx-docker-nonprod-virtual.us.artifactory.gcso.cbre.com/devx-sdlc-agents:8" #the image to use
+  hostname: "sdlc-agents.internal.devx.cbre.com"
+  path: "/" #the path to use
+  resources:
+    requests:
+      memory: "512Mi"
+      cpu: "100m"
+    limits:
+      memory: "512Mi"
+      cpu: "100m"
+  port: 8000
+  hpa:
+    minReplicas: 1
+    maxReplicas: 3
+    targetCPUUtilizationPercentage: 80
+    targetMemoryUtilizationPercentage: 80
+  replicas: 1
+  configmaps:
+    self:
+      NAME: "sdlc-agents"
+      TRIGGER: triggerzzzaaabbbccc
+      ABC: triggerzzzaaabbbccc
+      AA: AA
+      BB: BB
+      CC: cccc
+
+    jira:
+      JIRA_AUTH_EMAIL: "us_svc_devops_prod@cbre.com"
+      JIRA_BASE_URL: "https://cbre-jira-sandbox-125.atlassian.net"
+
+    opensearch:
+      OPENSEARCH_ID: "cbreadmin"
+      OPENSEARCH_HOST: "vpc-devx-opensearch-uat-d2tdtw4owzybh3wfd3n7gjwxka.us-east-1.es.amazonaws.com"
+
+    auth:
+      API_USERNAME: "us_svc_devops_prod@cbre.com"
+
+    azure-openai:
+      AZURE_API_BASE: "https://agentic-bot-use2-6e0c.openai.azure.com"
+      AZURE_API_VERSION: "2024-05-01-preview"
+      MODEL: "azure/gpt-4o-mini"
+      EMBEDDING_MODEL: "text-embedding-ada-002"
+
+    devx:
+      DEVX_HOST: "uat.devx.cbre.com"
+      DEVX_USER: "3B2E6012-0F6F-4F1D-8C02-F105BE8D17B3"
+      DEVX_USAGE_EMAIL: "us_svc_devops@cbre.com"
+      DEVX_USAGE_CLIENTID: "xxx"
+
+  secrets:
+    azure-openai:
+      - AZURE_OPENAI_API_KEY
+      - AZURE_API_KEY
+
+    vault:
+      - VAULT_APPROLE_SECRET
+
+    opensearch:
+      - OPENSEARCH_PASSWORD
+
+    jira:
+      - JIRA_AUTH_TOKEN
+
+    auth:
+      - API_PASSWORD
+
+    devx:
+      - DEVX_TOKEN
